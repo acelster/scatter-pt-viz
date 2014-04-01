@@ -9,7 +9,7 @@ float=true
 SHELL=/bin/bash
 CC=gcc
 CFLAGS=-std=c99 -O3 -g -I/usr/local/cuda/include -fopenmp
-NVFLAGS= -arch=compute_35 -code=sm_35 --ptxas-options=-v -Xcompiler -fopenmp
+NVFLAGS= -arch=compute_30 -code=sm_30 --ptxas-options=-v -Xcompiler -fopenmp
 LDFLAGS= -L/usr/local/cuda/lib64 -L/usr/lib/nvidia-current -L/usr/lib/nvidia-304 -lrt -lm -lGL -lGLU -lglut -pthread -lhdf5 -llapack -lblas -lcuda -lcudart -fopenmp -g
 
 SOURCES_ALL=$(wildcard *.c)
@@ -26,11 +26,11 @@ endif
 
 all : cuda_spv spv
 
-rsv : $(OBJECTS)
+spv : $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) main.c $(LDFLAGS) -o spv.out
 	
-cuda_rsv : $(CUDA_VERSION_OBJECTS) $(CUDA_OBJECTS)
-	$(CC) $(CFLAGS) -DUSE_CUDA $(CUDA_VERSION_OBJECTS) $(CUDA_OBJECTS) main.c $(LDFLAGS) -o spv.out
+cuda_spv : $(CUDA_VERSION_OBJECTS) $(CUDA_OBJECTS)
+	$(CC) $(CFLAGS) -DUSE_CUDA $(CUDA_VERSION_OBJECTS) $(CUDA_OBJECTS) main.c $(LDFLAGS) -o cuda_spv.out
 	
 $(CUDA_OBJECTS): %.o : %.cu
 	nvcc $(NVFLAGS) $< -c -o $@
